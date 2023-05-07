@@ -1,22 +1,33 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import './ItemListContainer.css';
 import { Card, CardGroup } from 'react-bootstrap';
-import acdc1 from './acdc/imagen1.jpg';
-import acdc2 from './acdc/imagen2.jpg';
-import acdc3 from './acdc/imagen3.jpg';
-import acdc4 from './acdc/imagen4.jpg';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
+import { getFirestore, collection, query, where, getDocs } from 'firebase/firestore';
 
+function ItemListContainer({ greeting, addToCart }) {
+  const { id: categoryId } = useParams();
+  const [items, setItems] = useState([]);
 
-const images = [
-  { id: 1, src: acdc1, alt: 'imagen1', title: '74\'Jailbreak', description: '1974', price: 10 },
-  { id: 2, src: acdc2, alt: 'imagen2', title: 'High Voltage', description: '1975', price: 15 },
-  { id: 3, src: acdc3, alt: 'imagen3', title: 'Dirty Deeds Done Dirt Cheap', description: '1976', price: 20 },
-  { id: 4, src: acdc4, alt: 'imagen4', title: 'Let There Be Rock', description: '1977', price: 25 },
+  useEffect(() => {
+    const fetchItems = async () => {
+      const db = getFirestore();
+      const itemsCollection = collection(db, 'items');
 
-];
+      let itemQuery;
+      if (categoryId) {
+        itemQuery = query(itemsCollection, where('categoryId', '==', parseInt(categoryId)));
+      } else {
+        itemQuery = itemsCollection;
+      }
 
-function ItemListContainer({ greeting }) {
+      const itemSnapshot = await getDocs(itemQuery);
+      const itemList = itemSnapshot.docs.map(doc => ({ ...doc.data(), id: doc.id }));
+      setItems(itemList);
+    };
+
+    fetchItems();
+  }, [categoryId]);
+
   return (
     <div>
       <div className="mb-3">
@@ -25,15 +36,28 @@ function ItemListContainer({ greeting }) {
       <h2>{greeting}</h2>
       <p>CD's disponibles</p>
       <CardGroup>
-        {images.map((image) => (
-          <Card key={image.id}>
-            <Card.Img variant="top" src={image.src} alt={image.alt} />
+        {items.map((item) => (
+          <Card key={item.id}>
+            <Card.Img variant="top" src={item.src} alt={item.alt} />
             <Card.Body>
-              <Card.Title>{image.title}</Card.Title>
+              <Card.Title>{item.title}</Card.Title>
               <Card.Text>
-                {image.description}
+                {item.description}
               </Card.Text>
-              <Link to={`/item/${image.id}`} className="btn btn-primary">Detalles</Link>
+              <Card.Text>
+                Precio: ${item.price}
+              </Card.Text>
+              <div className="d-flex justify-content-between">
+                <Link to={`/item/${item.id}`} className="btn btn-primary">
+                  Detalles
+                </Link>
+                <button
+                  onClick={() => addToCart(item)}
+                  className="btn btn-primary"
+                >
+                  Agregar al carrito
+                </button>
+              </div>
             </Card.Body>
             <Card.Footer>
               <small className="text-muted">Last updated 3 mins ago</small>
@@ -44,7 +68,7 @@ function ItemListContainer({ greeting }) {
     </div>
   );
 }
-export default ItemListContainer;
 
+export default ItemListContainer;
 
 

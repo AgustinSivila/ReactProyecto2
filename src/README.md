@@ -1,0 +1,1 @@
+Mi proyecto es un sitio web de compra que ofrece una selección de CDs de música. El objetivo principal es permitir a los usuarios navegar por el catálogo, ver detalles de los productos, agregarlos a un carrito de compras y finalizar la compra a través de un checkout.
