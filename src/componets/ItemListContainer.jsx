@@ -3,8 +3,9 @@ import './ItemListContainer.css';
 import { Card, CardGroup } from 'react-bootstrap';
 import { Link, useParams } from 'react-router-dom';
 import { getFirestore, collection, query, where, getDocs } from 'firebase/firestore';
+import CategorySelection from './CategorySelection';
 
-function ItemListContainer({ greeting, addToCart }) {
+function ItemListContainer({ greeting, addToCart, onCategorySelect }) {
   const { id: categoryId } = useParams();
   const [items, setItems] = useState([]);
 
@@ -28,10 +29,19 @@ function ItemListContainer({ greeting, addToCart }) {
     fetchItems();
   }, [categoryId]);
 
+  const handleCategorySelect = (categoryId) => {
+    onCategorySelect(categoryId);
+  };
+
+  const handleAddToCart = (item) => {
+    addToCart(item, 1);
+  };
+
   return (
     <div>
       <div className="mb-3">
-        <Link to="/" className="btn btn-primary">Menú Principal</Link>
+        <Link to="/category" className="btn btn-primary">Menú Principal</Link>
+        <CategorySelection onSelectCategory={handleCategorySelect} />
       </div>
       <h2>{greeting}</h2>
       <p>CD's disponibles</p>
@@ -52,7 +62,7 @@ function ItemListContainer({ greeting, addToCart }) {
                   Detalles
                 </Link>
                 <button
-                  onClick={() => addToCart(item)}
+                  onClick={() => handleAddToCart(item)}
                   className="btn btn-primary"
                 >
                   Agregar al carrito
@@ -65,10 +75,17 @@ function ItemListContainer({ greeting, addToCart }) {
           </Card>
         ))}
       </CardGroup>
+
+      
     </div>
   );
 }
 
 export default ItemListContainer;
+
+
+
+
+
 
 

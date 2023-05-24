@@ -3,7 +3,7 @@ import { collection, addDoc } from 'firebase/firestore';
 import { db } from "./firebaseConfig";
 
 
-function Checkout({ cart }) {
+function Checkout({ cart, clearCart }) {
   const [name, setName] = useState('');
   const [lastName, setLastName] = useState('');
   const [phone, setPhone] = useState('');
@@ -34,6 +34,7 @@ function Checkout({ cart }) {
       // Guardar la orden en Firestore y obtener el order id
       const docRef = await addDoc(collection(db, 'orders'), order);
       alert(`¡Orden realizada con éxito! Tu ID de orden es: ${docRef.id}`);
+      clearCart(); // Limpiar el carrito después de realizar el pedido
     } catch (error) {
       console.error('Error al guardar la orden: ', error);
       alert('Ocurrió un error al guardar la orden. Por favor, inténtalo de nuevo.');
@@ -89,6 +90,7 @@ function Checkout({ cart }) {
         />
         <button type="submit">Confirmar pedido</button>
       </form>
+      <button onClick={clearCart}>Clear</button>
     </div>
   );
 }

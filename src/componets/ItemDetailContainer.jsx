@@ -49,7 +49,7 @@ function ItemDetailContainer({ addToCart }) {
   Agregar al carrito
 </button>
 
-      <Link to="/category/1" className="btn btn-primary">
+      <Link to="/category/:id" className="btn btn-primary">
         Volver a la lista de productos
       </Link>
     </div>
