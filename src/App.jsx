@@ -47,7 +47,17 @@ function App() {
   const handleCartClick = () => {
     setShowCheckout(!showCheckout);
   };
-
+  const removeOneFromCart = (itemId) => {
+    const updatedCart = cart.map((cartItem) =>
+      cartItem.id === itemId
+        ? { ...cartItem, quantity: cartItem.quantity - 1 }
+        : cartItem
+    );
+    setCart(updatedCart);
+  };
+  
+  
+  
   return (
     <BrowserRouter>
        <Navbar cart={cart} itemCount={itemCount} onCartClick={handleCartClick} clearCart={clearCart} />
@@ -62,7 +72,7 @@ function App() {
           cart={cart} />
       </> }  />
   <Route path="/category/:id" element={  <> <ItemListContainer addToCart={addToCart} cart={cart} /> </>  }/>
-  <Route path="/item/:id" element={ <> <ItemDetailContainer addToCart={addToCart} /> </>   } />
+  <Route path="/item/:id" element={<ItemDetailContainer addToCart={addToCart} removeFromCart={removeOneFromCart} />} />
   <Route path="/categoryselection" element={ <> <Navbar cart={cart} itemCount={itemCount} onCartClick={handleCartClick} clearCart={clearCart} />
      {showCheckout && <Checkout cart={cart} clearCart={clearCart} />}
        <CategorySelection onSelectCategory={handleCategorySelect} /> </> }/>

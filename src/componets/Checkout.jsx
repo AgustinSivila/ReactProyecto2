@@ -3,7 +3,7 @@ import { collection, addDoc } from 'firebase/firestore';
 import { db } from "./firebaseConfig";
 
 
-function Checkout({ cart, clearCart }) {
+function Checkout({ cart, clearCart,  removeFromCart }) {
   const [name, setName] = useState('');
   const [lastName, setLastName] = useState('');
   const [phone, setPhone] = useState('');

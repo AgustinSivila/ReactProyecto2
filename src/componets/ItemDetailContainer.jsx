@@ -3,10 +3,10 @@ import ItemDetail from './ItemDetail';
 import { useParams, Link } from 'react-router-dom';
 import { getFirestore, doc, getDoc } from 'firebase/firestore';
 
-function ItemDetailContainer({ addToCart }) {
+function ItemDetailContainer({ addToCart, removeFromCart }) {
   const { id } = useParams();
   const [item, setItem] = useState(null);
-  const [quantity, setQuantity] = useState(1); 
+  const [quantity, setQuantity] = useState(1);
 
   useEffect(() => {
     const fetchItem = async () => {
@@ -28,26 +28,25 @@ function ItemDetailContainer({ addToCart }) {
     setQuantity(parseInt(event.target.value, 10));
   };
 
+  const handleAddToCart = () => {
+    addToCart(item, quantity);
+  };
+
+  const handleRemoveOneFromCart = () => {
+    removeFromCart(item.id);
+  };
+
   return (
     <div>
-      {item ? <ItemDetail item={item} /> : <p>Loading...</p>}
+      {item ? (
+        <ItemDetail item={item} handleRemoveOneFromCart={handleRemoveOneFromCart} />
+      ) : (
+        <p>Loading...</p>
+      )}
 
-     
-      <input
-        type="number"
-        value={quantity}
-        onChange={handleQuantityChange}
-        min="1"
-      />
+      <input type="number" value={quantity} onChange={handleQuantityChange} min="1" />
 
-<button
-  onClick={() => {
-    console.log('ItemDetailContainer: calling addToCart'); 
-    addToCart(item, quantity);
-  }}
->
-  Agregar al carrito
-</button>
+      <button onClick={handleAddToCart}>Agregar al carrito</button>
 
       <Link to="/category/:id" className="btn btn-primary">
         Volver a la lista de productos
@@ -57,3 +56,6 @@ function ItemDetailContainer({ addToCart }) {
 }
 
 export default ItemDetailContainer;
+
+
+
